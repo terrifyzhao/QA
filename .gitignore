@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+/.idea
+wiki.model
+wiki.txt
+wiki.model.trainables.syn1neg.npy
+wiki.model.wv.vectors.npy
