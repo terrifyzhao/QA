@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 /.idea
-wiki.model
-wiki.txt
-wiki.model.trainables.syn1neg.npy
-wiki.model.wv.vectors.npy
+/word2vec
+/elmo
+/data/elmo_embedding.pkl
