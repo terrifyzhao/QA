@@ -133,5 +133,7 @@ word2vec/
 
 data/elmo_embedding.pkl
 
-elmo/
-!elmo/*.gitkeep
+
+
+**elmo/*
+!**elmo/.gitkeep
