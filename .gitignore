@@ -129,11 +129,11 @@ dmypy.json
 .pyre/
 
 .idea/
-word2vec/
 
 data/elmo_embedding.pkl
 
-
+**word2vec/*
+!**word2vec/.gitkeep
 
 **elmo/*
 !**elmo/.gitkeep
