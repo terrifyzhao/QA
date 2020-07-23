@@ -128,9 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/.idea
-/word2vec
+.idea/
+word2vec/
 
-/data/elmo_embedding.pkl
+data/elmo_embedding.pkl
+
 elmo/
 !elmo/*.gitkeep
