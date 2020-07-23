@@ -130,5 +130,7 @@ dmypy.json
 
 /.idea
 /word2vec
-/elmo
+
 /data/elmo_embedding.pkl
+elmo/
+!elmo/*.gitkeep
