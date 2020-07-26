@@ -128,8 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/.idea
-wiki.model
-wiki.txt
-wiki.model.trainables.syn1neg.npy
-wiki.model.wv.vectors.npy
+.idea/
+
+data/elmo_embedding.pkl
+
+**word2vec/*
+!**word2vec/.gitkeep
+
+**elmo/*
+!**elmo/.gitkeep
