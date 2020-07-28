@@ -20,12 +20,10 @@ class SimModel(nn.Module):
 
     def forward(self, x):
         x1, x2 = x
-        # 使用elmo的输出值作为输入
-        # x1 = elmo.sents2elmo(x1)
-        # x1 = torch.from_numpy(np.array([np.mean(v, axis=0) for v in x1])).cuda()
-        # x2 = elmo.sents2elmo(x2)
-        # x2 = torch.from_numpy(np.array([np.mean(v, axis=0) for v in x2])).cuda()
         # 拼接在一起
+
+
+
         x = torch.cat([x1, x2], dim=1)
         # 简单做一个二分类
         x = self.fc(x)

@@ -73,10 +73,12 @@ if __name__ == '__main__':
     parser.add_argument("--model", default="word2vec", type=str, required=False,
                         help="using word2vec or elmo")
     args = parser.parse_args()
+
     print('using model:', args.model)
     model_type = args.model
     question_vec = []
     model = None
+
     if model_type == 'elmo':
         # 使用elmo生成句向量
         model = Embedder(os.path.join(os.getcwd(), 'elmo'))
@@ -85,6 +87,7 @@ if __name__ == '__main__':
         else:
             question_vec.extend(elmo2vec(model, question))
             joblib.dump(question_vec, 'data/elmo_embedding.pkl')
+
     elif model_type == 'word2vec':
         # 使用word2vec生成句向量
         temporary_filepath = 'word2vec/wiki.model'
