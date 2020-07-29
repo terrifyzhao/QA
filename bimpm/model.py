@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 from sim_model.base_model import BaseModel
 
 
@@ -9,8 +10,6 @@ class BIMPM(BaseModel):
                  num_perspective=20,
                  char_vocab_size=100,
                  char_dim=10,
-                 word_vocab_size=10,
-                 word_dim=10,
                  char_hidden_size=10,
                  hidden_size=10,
                  max_word_len=10,
@@ -47,12 +46,11 @@ class BIMPM(BaseModel):
             hidden_size=hidden_size,
             num_layers=1,
             bidirectional=True,
-            batch_first=True
-        )
+            batch_first=True)
 
         # Matching Layer
         for i in range(1, 9):
-            setattr(self, f'm_w{i}',
+            setattr(self, f'p_w{i}',
                     nn.Parameter(torch.rand(self.l, hidden_size)))
 
         # ----- Aggregation Layer -----
@@ -122,56 +120,41 @@ class BIMPM(BaseModel):
         return self.div_with_small_value(a, d)
 
     def forward(self, char_p, char_q):
-        # p = self.word_emb(word_p)
-        # q = self.word_emb(word_q)
 
-        # (batch, seq_len, max_word_len) -> (batch * seq_len, max_word_len)
-        seq_len_p = char_p.size(1)
-        seq_len_q = char_q.size(1)
+        p_embedding, _ = self.char_LSTM(self.char_embedding(char_p.long()))
+        q_embedding, _ = self.char_LSTM(self.char_embedding(char_q.long()))
 
-        char_p = char_p.view(-1, self.max_word_len)
-        char_q = char_q.view(-1, self.max_word_len)
-
-        # (batch * seq_len, max_word_len, char_dim)-> (1, batch * seq_len, char_hidden_size)
-        _, (char_p, _) = self.char_LSTM(self.char_emb(char_p))
-        _, (char_q, _) = self.char_LSTM(self.char_emb(char_q))
-
-        # (batch, seq_len, char_hidden_size)
-        char_p = char_p.view(-1, seq_len_p, self.char_hidden_size)
-        char_q = char_q.view(-1, seq_len_q, self.char_hidden_size)
-
-        # (batch, seq_len, word_dim + char_hidden_size)
-        # p = torch.cat([p, char_p], dim=-1)
-        # q = torch.cat([q, char_h], dim=-1)
-
-        p = self.dropout(char_p)
-        q = self.dropout(char_q)
+        p_embedding = self.dropout(p_embedding)
+        q_embedding = self.dropout(q_embedding)
 
         # ----- Context Representation Layer -----
         # (batch, seq_len, hidden_size * 2)
-        con_p, _ = self.context_LSTM(p)
-        con_q, _ = self.context_LSTM(q)
+        con_p, _ = self.context_LSTM(p_embedding)
+        con_q, _ = self.context_LSTM(q_embedding)
+
+        del p_embedding
+        del q_embedding
 
         con_p = self.dropout(con_p)
         con_q = self.dropout(con_q)
 
         # (batch, seq_len, hidden_size)
-        con_p_fw, con_p_bw = torch.split(con_p, self.hidden_size, dim=-1)
-        con_q_fw, con_q_bw = torch.split(con_q, self.hidden_size, dim=-1)
+        con_p_fw, con_p_bw = torch.split(con_p, self.char_hidden_size, dim=-1)
+        con_q_fw, con_q_bw = torch.split(con_q, self.char_hidden_size, dim=-1)
 
         # 1. Full-Matching
 
         # (batch, seq_len, hidden_size), (batch, hidden_size)
         # -> (batch, seq_len, l)
-        p_full_fw = self.full_matching(con_p_fw, con_q_fw[:, -1, :], self.mp_w1)
-        p_full_bw = self.full_matching(con_p_bw, con_q_bw[:, 0, :], self.mp_w2)
-        q_full_fw = self.full_matching(con_q_fw, con_p_fw[:, -1, :], self.mp_w1)
-        q_full_bw = self.full_matching(con_q_bw, con_p_bw[:, 0, :], self.mp_w2)
+        p_full_fw = self.full_matching(con_p_fw, con_q_fw[:, -1, :], self.p_w1)
+        p_full_bw = self.full_matching(con_p_bw, con_q_bw[:, 0, :], self.p_w2)
+        q_full_fw = self.full_matching(con_q_fw, con_p_fw[:, -1, :], self.p_w1)
+        q_full_bw = self.full_matching(con_q_bw, con_p_bw[:, 0, :], self.p_w2)
 
         # 2. Maxpooling-Matching
         # (batch, seq_len1, seq_len2, l)
-        max_fw = self.pairwise_matching(con_p_fw, con_q_fw, self.mp_w3)
-        max_qw = self.pairwise_matching(con_p_bw, con_q_bw, self.mp_w4)
+        max_fw = self.pairwise_matching(con_p_fw, con_q_fw, self.p_w3)
+        max_qw = self.pairwise_matching(con_p_bw, con_q_bw, self.p_w4)
         # (batch, seq_len, l)
         p_max_fw, _ = max_fw.max(dim=2)
         p_max_bw, _ = max_qw.max(dim=2)
@@ -204,10 +187,10 @@ class BIMPM(BaseModel):
         att_mean_p_bw = self.div_with_small_value(att_p_bw.sum(dim=1), att_bw.sum(dim=1, keepdim=True).permute(0, 2, 1))
 
         # (batch, seq_len, l)
-        p_att_mean_fw = self.full_matching(con_p_fw, att_mean_h_fw, self.mp_w5)
-        p_att_mean_bw = self.full_matching(con_p_bw, att_mean_h_bw, self.mp_w6)
-        q_att_mean_fw = self.full_matching(con_q_fw, att_mean_p_fw, self.mp_w5)
-        q_att_mean_bw = self.full_matching(con_q_bw, att_mean_p_bw, self.mp_w6)
+        p_att_mean_fw = self.full_matching(con_p_fw, att_mean_h_fw, self.p_w5)
+        p_att_mean_bw = self.full_matching(con_p_bw, att_mean_h_bw, self.p_w6)
+        q_att_mean_fw = self.full_matching(con_q_fw, att_mean_p_fw, self.p_w5)
+        q_att_mean_bw = self.full_matching(con_q_bw, att_mean_p_bw, self.p_w6)
 
         # 4. Max-Attentive-Matching
         # (batch, seq_len1, hidden_size)
@@ -218,10 +201,10 @@ class BIMPM(BaseModel):
         att_max_p_bw, _ = att_p_bw.max(dim=1)
 
         # (batch, seq_len, l)
-        p_att_max_fw = self.full_matching(con_p_fw, att_max_h_fw, self.mp_w7)
-        p_att_max_bw = self.full_matching(con_p_bw, att_max_h_bw, self.mp_w8)
-        q_att_max_fw = self.full_matching(con_q_fw, att_max_p_fw, self.mp_w7)
-        q_att_max_bw = self.full_matching(con_q_bw, att_max_p_bw, self.mp_w8)
+        p_att_max_fw = self.full_matching(con_p_fw, att_max_h_fw, self.p_w7)
+        p_att_max_bw = self.full_matching(con_p_bw, att_max_h_bw, self.p_w8)
+        q_att_max_fw = self.full_matching(con_q_fw, att_max_p_fw, self.p_w7)
+        q_att_max_bw = self.full_matching(con_q_bw, att_max_p_bw, self.p_w8)
 
         # (batch, seq_len, l * 8)
         p = torch.cat(
@@ -241,8 +224,8 @@ class BIMPM(BaseModel):
 
         # 2 * (2, batch, hidden_size) -> 2 * (batch, hidden_size * 2) -> (batch, hidden_size * 4)
         x = torch.cat(
-            [agg_p_last.permute(1, 0, 2).contiguous().view(-1, self.args.hidden_size * 2),
-             agg_q_last.permute(1, 0, 2).contiguous().view(-1, self.args.hidden_size * 2)], dim=1)
+            [agg_p_last.permute(1, 0, 2).contiguous().view(-1, self.char_hidden_size * 2),
+             agg_q_last.permute(1, 0, 2).contiguous().view(-1, self.char_hidden_size * 2)], dim=1)
         x = self.dropout(x)
 
         # ----- Prediction Layer -----

@@ -15,9 +15,15 @@ class BaseModel(nn.Module):
             lr,
             model_path):
         eval_x, eval_y = eval_data
-        eval_x = torch.from_numpy(eval_x)
+
+        eval_p = eval_x[0]
+        eval_q = eval_x[1]
+
+        eval_p = torch.from_numpy(eval_p)
+        eval_q = torch.from_numpy(eval_q)
         if torch.cuda.is_available():
-            eval_x = eval_x.cuda()
+            eval_p = eval_p.cuda()
+            eval_q = eval_q.cuda()
         if torch.cuda.is_available():
             self = self.cuda()
 
@@ -27,18 +33,19 @@ class BaseModel(nn.Module):
         best_acc = 0
 
         for epoch in range(epochs):
-            for step, (b_x, b_y) in enumerate(train_data_loader):
+            for step, (b_p, b_q, b_y) in enumerate(train_data_loader):
                 if torch.cuda.is_available():
-                    b_x = b_x.cuda()
+                    b_p = b_p.cuda()
+                    b_q = b_q.cuda()
                     b_y = b_y.cuda()
-                output = self(b_x)
+                output = self(b_p, b_q)
                 loss = loss_func(output, b_y)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
 
                 if step % 20 == 0:
-                    test_output = self(eval_x)
+                    test_output = self(eval_p, eval_q)
                     pred_y = torch.max(test_output, 1)[1].cpu().data.numpy()
                     accuracy = float((pred_y == eval_y).astype(int).sum()) / float(eval_y.size)
                     if accuracy > best_acc:

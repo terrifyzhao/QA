@@ -1,5 +1,5 @@
 import pandas as pd
-import jieba
+# import jieba
 from collections import defaultdict
 import numpy as np
 import os
@@ -24,7 +24,7 @@ def build_vocab(del_word_frequency):
 
     word_sort = sorted(word_frequency.items(), key=lambda x: x[1], reverse=True)  # 根据词频降序排序
 
-    f = open('vocab.txt', 'w', encoding='utf-8')
+    f = open('../bimpm/vocab.txt', 'w', encoding='utf-8')
     f.write('[PAD]' + "\n" + '[UNK]' + "\n")
     for d in word_sort:
         if d[1] > del_word_frequency:
@@ -42,9 +42,9 @@ def split_data(df, split=0.7):
 
 
 vocab = {}
-with open('vocab.txt', encoding='utf-8')as file:
+with open('../bimpm/vocab.txt', encoding='utf-8')as file:
     for line in file.readlines():
-        vocab[line] = len(vocab)
+        vocab[line.strip()] = len(vocab)
 
 
 # 把数据转换成index
@@ -57,7 +57,7 @@ def seq2index(seq):
 
 
 # 统一长度
-def padding_seq(X, max_len=15):
+def padding_seq(X, max_len=10):
     return np.array([
         np.concatenate([x, [0] * (max_len - len(x))]) if len(x) < max_len else x[:max_len] for x in X
     ])
