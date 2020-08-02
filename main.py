@@ -6,6 +6,8 @@ import argparse
 from elmoformanylangs import Embedder
 import os
 import joblib
+from text_similarity.predict import predict
+from text_classification.predict import classification_predict
 
 # 加载数据
 df = pd.read_csv('data/qa_data.csv')
@@ -73,10 +75,12 @@ if __name__ == '__main__':
     parser.add_argument("--model", default="word2vec", type=str, required=False,
                         help="using word2vec or elmo")
     args = parser.parse_args()
+
     print('using model:', args.model)
     model_type = args.model
     question_vec = []
     model = None
+
     if model_type == 'elmo':
         # 使用elmo生成句向量
         model = Embedder(os.path.join(os.getcwd(), 'elmo'))
@@ -85,6 +89,7 @@ if __name__ == '__main__':
         else:
             question_vec.extend(elmo2vec(model, question))
             joblib.dump(question_vec, 'data/elmo_embedding.pkl')
+
     elif model_type == 'word2vec':
         # 使用word2vec生成句向量
         temporary_filepath = 'word2vec/wiki.model'
@@ -95,19 +100,45 @@ if __name__ == '__main__':
     while 1:
         # 用户的问题转向量
         q = input('问题：')
+
+        # 分类，判断是闲聊还是封闭域问题
+        prob = classification_predict(q)
+        print('是闲聊的概率为：', prob[0])
+        if prob[0] > 0.5:
+            print('当前为闲聊')
+            continue
+
         vec = None
         if model_type == 'elmo':
             vec = elmo2vec(model, q, predict=True)[0]
         elif model_type == 'word2vec':
             vec = sen2vec(model, q, predict=True)
-        print(vec)
+
+        # ——————————召回———————————
+        # 计算相似度
         cosine = cal_cosine(vec, question_vec)
-        # 最大值
+        # 相似度最大值
         max_cosine = max(cosine)
         # 最大值对应的索引
         index = np.argmax(cosine)
-        print(max_cosine)
+        # 小于0.8直接结束
         if max_cosine < 0.8:
             print('没有找到准确的答案，你想问的问题是不是：', question[index])
             continue
-        print('答案：', answer[index])
+
+        # ——————————排序———————————
+        # 取top10的下标
+        top_10 = np.argsort(-cosine)[0:10]
+        # 把10个句子用文本相似度模型判断
+        candidate = question[top_10]
+        esim_res = predict([q] * 10, candidate)
+        index_dic = {}
+        print('候选集：')
+        for i, index in enumerate(top_10):
+            print(candidate[i], '  ', cosine[index], '  ', esim_res[i])
+            index_dic[i] = index
+
+        esim_index = np.argsort(-esim_res)[0]
+        print()
+        print('最相似的问题：', question[index_dic[esim_index]])
+        print('答案：', answer[index_dic[esim_index]])
