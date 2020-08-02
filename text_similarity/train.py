@@ -77,7 +77,6 @@ def train():
                 if accuracy > best_acc:
                     best_acc = accuracy
                     torch.save(model, 'esim.p')
-                    # model.save_model()
                     print('save model, accuracy: %.3f' % accuracy)
                 print('Epoch: ', epoch, '| train loss: %.4f' % loss.cpu().data.numpy(),
                       '| test accuracy: %.3f' % accuracy)

@@ -44,10 +44,10 @@ def split_data(df, split=0.7):
 
 
 vocab = {}
-with open(path + '/vocab.txt', encoding='utf-8')as file:
-    # with open('text_similarity/vocab.txt', encoding='utf-8')as file:
-    for line in file.readlines():
-        vocab[line.strip()] = len(vocab)
+if os.path.exists(path + '/vocab.txt'):
+    with open(path + '/vocab.txt', encoding='utf-8')as file:
+        for line in file.readlines():
+            vocab[line.strip()] = len(vocab)
 
 
 # 把数据转换成index

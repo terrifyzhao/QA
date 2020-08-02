@@ -18,4 +18,4 @@ def classification_predict(s):
 if __name__ == '__main__':
     while 1:
         s = input('句子：')
-        print(classification_predict([s]))
+        print(classification_predict(s))
