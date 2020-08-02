@@ -6,7 +6,8 @@ import argparse
 from elmoformanylangs import Embedder
 import os
 import joblib
-from similarity.predict import predict
+from text_similarity.predict import predict
+from text_classification.predict import classification_predict
 
 # 加载数据
 df = pd.read_csv('data/qa_data.csv')
@@ -99,6 +100,14 @@ if __name__ == '__main__':
     while 1:
         # 用户的问题转向量
         q = input('问题：')
+
+        # 分类，判断是闲聊还是封闭域问题
+        prob = classification_predict(q)
+        print('是闲聊的概率为：', prob[0])
+        if prob[0] > 0.5:
+            print('当前为闲聊')
+            continue
+
         vec = None
         if model_type == 'elmo':
             vec = elmo2vec(model, q, predict=True)[0]
