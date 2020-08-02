@@ -98,16 +98,17 @@ if __name__ == '__main__':
             question_vec.append(sen2vec(model, q))
 
     while 1:
-        # 用户的问题转向量
+        # 输入问题
         q = input('问题：')
 
-        # 分类，判断是闲聊还是封闭域问题
+        # ——————————分类———————————
         prob = classification_predict(q)
         print('是闲聊的概率为：', prob[0])
         if prob[0] > 0.5:
             print('当前为闲聊')
             continue
 
+        # ————————文本表示—————————
         vec = None
         if model_type == 'elmo':
             vec = elmo2vec(model, q, predict=True)[0]
