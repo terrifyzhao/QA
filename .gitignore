@@ -137,3 +137,5 @@ data/elmo_embedding.pkl
 
 **elmo/*
 !**elmo/.gitkeep
+
+chitchat/dialogue_model/
