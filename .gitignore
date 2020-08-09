@@ -138,5 +138,5 @@ data/elmo_embedding.pkl
 **elmo/*
 !**elmo/.gitkeep
 
-chitchat/dialogue_model/
+**chitchat/dialogue_model/*
 !**chitchat/dialogue_model/.gitkeep
