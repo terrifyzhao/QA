@@ -8,6 +8,7 @@ import os
 import joblib
 from text_similarity.predict import predict
 from text_classification.predict import classification_predict
+from chitchat.interact import chitchat
 
 # 加载数据
 df = pd.read_csv('data/qa_data.csv')
@@ -106,6 +107,7 @@ if __name__ == '__main__':
         print('是闲聊的概率为：', prob[0])
         if prob[0] > 0.5:
             print('当前为闲聊')
+            print(chitchat(q))
             continue
 
         # ————————文本表示—————————
