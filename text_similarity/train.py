@@ -64,7 +64,9 @@ def train():
                 b_p = b_p.cuda()
                 b_q = b_q.cuda()
                 b_y = b_y.cuda()
+
             output = model(b_p, b_q)
+
             loss = loss_func(output, b_y.float())
             optimizer.zero_grad()
             loss.backward()

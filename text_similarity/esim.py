@@ -46,7 +46,6 @@ class ESIM(nn.Module):
             batch_first=True)
 
         # ----- Prediction Layer -----
-
         self.max_pool1 = nn.MaxPool2d((self.max_word_len, 1))
         self.max_pool2 = nn.MaxPool2d((self.max_word_len, 1))
 
@@ -76,6 +75,7 @@ class ESIM(nn.Module):
 
         p_max = self.max_pool1(p).squeeze(dim=1)
         q_max = self.max_pool2(q).squeeze(dim=1)
+
         p_mean = torch.mean(p, dim=1)
         q_mean = torch.mean(q, dim=1)
 
