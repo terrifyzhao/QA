@@ -70,6 +70,9 @@ def cal_cosine(a, b):
     return np.matmul(a, np.array(b).T) / np.linalg.norm(a) / np.linalg.norm(b, axis=1)
 
 
+
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
