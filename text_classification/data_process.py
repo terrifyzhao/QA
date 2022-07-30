@@ -67,4 +67,4 @@ def padding_seq(X, max_len=10):
 
 
 if __name__ == '__main__':
-    build_vocab(5)
+    build_vocab(3)

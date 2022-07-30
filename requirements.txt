@@ -1,5 +1,163 @@
-gensim
-jieba
-numpy
-pandas
-transformers
+absl-py==0.13.0
+aiohttp @ file:///C:/ci/aiohttp_1602530153430/work
+annlp @ file:///D:/UGit/annlp/dist/annlp-0.1.12.tar.gz
+argon2-cffi==20.1.0
+ase==3.21.1
+async-generator==1.10
+async-timeout==3.0.1
+attrs @ file:///tmp/build/80754af9/attrs_1604765588209/work
+backcall==0.2.0
+bleach==3.3.0
+boto==2.49.0
+boto3 @ file:///tmp/build/80754af9/boto3_1614893279393/work
+botocore @ file:///tmp/build/80754af9/botocore_1614882656797/work
+brotlipy==0.7.0
+cachetools @ file:///tmp/build/80754af9/cachetools_1611600262290/work
+certifi==2020.12.5
+cffi @ file:///C:/ci/cffi_1613247279197/work
+chardet==4.0.0
+click==7.1.2
+colorama==0.4.4
+cryptography==3.4.6
+cycler==0.10.0
+decorator==4.4.2
+defusedxml==0.7.1
+docker==4.4.4
+einops==0.4.0
+english==2020.7.0
+entrypoints==0.3
+filelock==3.0.12
+Flask==1.1.2
+gensim @ file:///C:/ci/gensim_1613994493780/work
+google-api-core @ file:///C:/ci/google-api-core-split_1613980333946/work
+google-auth @ file:///tmp/build/80754af9/google-auth_1614883971544/work
+google-auth-oauthlib==0.4.6
+google-cloud-core @ file:///tmp/build/80754af9/google-cloud-core_1613414810663/work
+google-cloud-storage @ file:///tmp/build/80754af9/google-cloud-storage_1614362409953/work
+google-crc32c @ file:///C:/ci/google-crc32c_1613236256627/work
+google-resumable-media @ file:///tmp/build/80754af9/google-resumable-media_1608056254223/work
+googleapis-common-protos @ file:///C:/ci/googleapis-common-protos-feedstock_1613726516812/work
+googledrivedownloader==0.4
+grpcio==1.40.0
+h11==0.12.0
+h5py==3.2.1
+huggingface-hub==0.4.0
+idna @ file:///home/linux1/recipes/ci/idna_1610986105248/work
+ipykernel==5.5.3
+ipython==7.22.0
+ipython-genutils==0.2.0
+ipywidgets==7.6.3
+isodate==0.6.0
+itsdangerous==1.1.0
+jedi==0.18.0
+jieba==0.42.1
+Jinja2==2.11.3
+jmespath @ file:///tmp/build/80754af9/jmespath_1594304593830/work
+joblib==1.0.1
+jsonschema==3.2.0
+jupyter==1.0.0
+jupyter-client==6.1.12
+jupyter-console==6.4.0
+jupyter-core==4.7.1
+jupyterlab-pygments==0.1.2
+jupyterlab-widgets==1.0.0
+kiwisolver==1.3.1
+lightgbm==3.3.2
+llvmlite==0.36.0
+Markdown==3.3.4
+MarkupSafe==1.1.1
+matplotlib==3.4.1
+mistune==0.8.4
+mkl-fft==1.2.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+monotonic==1.5
+multidict @ file:///C:/ci/multidict_1600456481656/work
+nbclient==0.5.3
+nbconvert==6.0.7
+nbformat==5.1.3
+neotime==1.7.4
+nest-asyncio==1.5.1
+networkx==2.5.1
+notebook==6.3.0
+numba==0.53.1
+numpy @ file:///C:/ci/numpy_and_numpy_base_1603466732592/work
+oauthlib==3.1.1
+olefile==0.46
+opencv-python==4.5.3.56
+outcome==1.1.0
+overrides==3.1.0
+packaging==20.9
+pandas==1.2.2
+pandocfilters==1.4.3
+pansi==2020.7.3
+parso==0.8.2
+pickleshare==0.7.5
+Pillow @ file:///C:/ci/pillow_1609786840597/work
+prometheus-client==0.10.0
+prompt-toolkit==2.0.10
+protobuf==3.14.0
+py2neo==2021.0.1
+pyahocorasick==1.4.2
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+Pygments==2.8.0
+pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1608057966937/work
+pyparsing==2.4.7
+pyrsistent==0.17.3
+PySocks @ file:///C:/ci/pysocks_1605287845585/work
+python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
+python-louvain==0.15
+pytz @ file:///tmp/build/80754af9/pytz_1612215392582/work
+pywin32==227
+pywinpty==0.5.7
+PyYAML==5.4.1
+pyzmq==22.0.3
+qtconsole==5.0.3
+QtPy==1.9.0
+rdflib==5.0.0
+regex==2021.3.17
+requests @ file:///tmp/build/80754af9/requests_1608241421344/work
+requests-oauthlib==1.3.0
+rjieba==0.1.11
+rsa @ file:///tmp/build/80754af9/rsa_1614366226499/work
+s3transfer @ file:///tmp/build/80754af9/s3transfer_1610404175646/work
+sacremoses==0.0.43
+scikit-learn==0.24.1
+scipy @ file:///C:/ci/scipy_1614023125644/work
+seaborn==0.11.2
+selenium==4.1.0
+Send2Trash==1.5.0
+six @ file:///C:/ci/six_1605187374963/work
+smart-open @ file:///tmp/build/80754af9/smart_open_1614023135845/work
+sniffio==1.2.0
+sortedcontainers==2.4.0
+tensorboard==2.6.0
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.0
+terminado==0.9.4
+testpath==0.4.4
+thop==0.0.31.post2005241907
+threadpoolctl==2.1.0
+tokenizers==0.11.6
+torch==1.7.1
+torchaudio==0.7.2
+torchvision==0.8.2
+tornado==6.1
+tqdm==4.60.0
+traitlets==5.0.5
+transformers==4.17.0
+trio==0.19.0
+trio-websocket==0.9.2
+typing-extensions @ file:///home/ktietz/src/ci_mi/typing_extensions_1612808209620/work
+urllib3 @ file:///tmp/build/80754af9/urllib3_1611694770489/work
+wcwidth==0.2.5
+webencodings==0.5.1
+websocket-client==0.57.0
+Werkzeug==1.0.1
+widgetsnbextension==3.5.1
+win-inet-pton @ file:///C:/ci/win_inet_pton_1605306167264/work
+wincertstore==0.2
+wsproto==1.0.0
+yarl @ file:///C:/ci/yarl_1598045274898/work

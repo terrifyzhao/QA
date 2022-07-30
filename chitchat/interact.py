@@ -1,19 +1,9 @@
 import transformers
 import torch
-import os
-import json
-import random
-import numpy as np
 import argparse
-from torch.utils.tensorboard import SummaryWriter
-from datetime import datetime
-from tqdm import tqdm
-from torch.nn import DataParallel
 import logging
-from transformers.modeling_gpt2 import GPT2Config, GPT2LMHeadModel
+from transformers import GPT2Config, GPT2LMHeadModel
 from transformers import BertTokenizer
-from os.path import join, exists
-from itertools import zip_longest, chain
 import torch.nn.functional as F
 
 PAD = '[PAD]'
@@ -133,7 +123,7 @@ def chitchat(text):
         # 对于[UNK]的概率设为无穷小，也就是说模型的预测结果不可能是[UNK]这个token
         next_token_logits[tokenizer.convert_tokens_to_ids('[UNK]')] = -float('Inf')
         filtered_logits = top_k_top_p_filtering(next_token_logits, top_k=args.topk, top_p=args.topp)
-        # torch.multinomial表示从候选集合中无放回地进行抽取num_samples个元素，权重越高，抽到的几率越高，返回元素的下标
+        # torch.multinomial 表示从候选集合中无放回地进行抽取num_samples个元素，权重越高，抽到的几率越高，返回元素的下标
         next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
         if next_token == tokenizer.sep_token_id:  # 遇到[SEP]则表明response生成结束
             break

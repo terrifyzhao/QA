@@ -43,7 +43,7 @@ def train():
                  hidden_size=128,
                  max_word_len=10)
 
-    train_data_loader, eval_x, eval_y = load_data(512)
+    train_data_loader, eval_x, eval_y = load_data(128)
     eval_p = eval_x[0]
     eval_q = eval_x[1]
     eval_p = torch.from_numpy(eval_p)
@@ -65,15 +65,15 @@ def train():
                 b_q = b_q.cuda()
                 b_y = b_y.cuda()
 
-            output = model(b_p, b_q)
+            output = model(b_p.long(), b_q.long())
 
             loss = loss_func(output, b_y.float())
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
-            if step % 20 == 0:
-                test_output = model(eval_p, eval_q)
+            if step % 500 == 0:
+                test_output = model(eval_p.long(), eval_q.long())
                 pred_y = (test_output.cpu().data.numpy() > 0.5).astype(int)
                 accuracy = float((pred_y == eval_y).astype(int).sum()) / float(eval_y.size)
                 if accuracy > best_acc:

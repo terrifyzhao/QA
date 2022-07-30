@@ -4,7 +4,7 @@ import os
 rootPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(rootPath)
 
-from text_classification.text_cnn import TextCNN
+from text_classification.text_cnn2 import TextCNN
 from torch.utils.data import DataLoader, TensorDataset
 from text_classification.data_process import *
 import torch
@@ -33,8 +33,9 @@ def load_data(batch_size=32):
 
 # 训练模型
 def train():
-    model = TextCNN(vocab_len=3966,
-                    embedding_size=100)
+    model = TextCNN(vocab_len=638,
+                    embedding_size=100,
+                    max_len=10)
 
     train_data_loader, eval_x, eval_y = load_data(512)
 

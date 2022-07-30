@@ -12,7 +12,7 @@ def predict(p, q):
     q = [seq2index(i) for i in q]
     p = torch.from_numpy(padding_seq(p)).cuda()
     q = torch.from_numpy(padding_seq(q)).cuda()
-    out = model(p, q)
+    out = model(p.long(), q.long())
     return out.cpu().data.numpy()
 
 

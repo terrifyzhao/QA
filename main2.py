@@ -1,51 +1,33 @@
-import numpy as np
 import pandas as pd
+import numpy as np
 import gensim
 import jieba
-import os
-from elmoformanylangs import Embedder
 from text_classification.predict import classification_predict
-from chitchat.interact import chitchat
 from text_similarity.predict import predict
+from chitchat.interact import chitchat
 
 df = pd.read_csv('data/qa_data.csv')
 question = df['question'].values
 answer = df['answer'].values
 
-model_path = 'word2vec/wiki.model'
-model = gensim.models.Word2Vec.load(model_path)
+model = gensim.models.Word2Vec.load('word2vec/wiki.model')
 
 
-# model = Embedder(os.path.join(os.getcwd(), 'elmo'))
-
-
-def sen2vec(sentence):
-    # 我爱NLP
-    # ['我','爱','NLP']
-    segment = list(jieba.cut(sentence))
+def sen2vec(text):
+    segment = list(jieba.cut(text))
     vec = np.zeros(100)
     for s in segment:
+        # 假如我们的词不在词向量里，就会出现oov的问题
         try:
             vec += model.wv[s]
         except:
-            # oov 不在词典内的词
             pass
     vec = vec / len(segment)
     return vec
 
 
-def elmo2vec(sentence):
-    if isinstance(sentence, str):
-        segment = list(jieba.cut(sentence))
-        vec = model.sents2elmo([segment])
-    elif isinstance(sentence, np.ndarray):
-        segment = [jieba.cut(s) for s in sentence]
-        vec = model.sents2elmo(segment)
-    return [np.mean(v, axis=0) for v in vec]
-
-
 def cosine(a, b):
-    return np.matmul(a, np.array(b).T) / (np.linalg.norm(a) * np.linalg.norm(b, axis=1))
+    return np.matmul(a, b.T) / np.linalg.norm(a) / np.linalg.norm(b, axis=-1)
 
 
 question_vec = []
@@ -54,47 +36,42 @@ for q in question:
 
 
 def qa(text):
-    # ---------------分类-------------------
+    # 先判断是否是闲聊
     prob = classification_predict(text)
-    print('是闲聊的概率是：', prob[0])
-    if prob[0] > 0.5:
-        print('当前是闲聊')
+    if prob > 0.5:
+        print('闲聊')
         res = chitchat(text)
         print(res)
         return res
-
-    # ---------------文本表示-------------------
     vec = sen2vec(text)
 
-    # 计算相似度
-    similarity = cosine(vec, question_vec)
-    # print('最大的相似度:', max(similarity))
+    # 召回
+    similarity = cosine(vec, np.array(question_vec))
     max_similarity = max(similarity)
-    # 最大的相似度对应的下标
-    index = np.argmax(similarity)
+    print('最大相似度', max_similarity)
     if max_similarity < 0.8:
-        print(max_similarity)
-        print('没有找到对应的问题，你问的是不是:', question[index])
-        return f'没有找到对应的问题，你问的是不是:, {question[index]}'
-
-    # ---------------排序-------------------
+        print('没有找到答案')
+        return '没有找到答案'
     top_10 = np.argsort(-similarity)[0:10]
     candidate = question[top_10]
-    esim_res = predict([text] * 10, candidate)
+
+    # 精排
+    esim_res = predict([q] * 10, candidate)
+
     index_dic = {}
+
     print('候选集：')
     for i, index in enumerate(top_10):
-        print(candidate[i], '\t', similarity[index], '\t', esim_res[i])
+        print(candidate[i], ' ', similarity[index], ' ', esim_res[i])
         index_dic[i] = index
 
     esim_index = np.argsort(-esim_res)[0]
-    print('最相似的问题：', question[index_dic[esim_index]])
-    print('答案:', answer[index_dic[esim_index]])
+    print('最相似的问题: ', question[index_dic[esim_index]])
+    print('答案: ', answer[index_dic[esim_index]])
     return answer[index_dic[esim_index]]
 
 
 if __name__ == '__main__':
-
     while 1:
-        text = input('请输入您的问题：')
-        qa(text)
+        q = input('请输入你的问题：')
+        qa(q)
