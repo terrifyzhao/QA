@@ -79,7 +79,7 @@ nbformat==5.1.3
 neotime==1.7.4
 nest-asyncio==1.5.1
 networkx==2.5.1
-notebook==6.3.0
+notebook==6.4.12
 numba==0.53.1
 numpy @ file:///C:/ci/numpy_and_numpy_base_1603466732592/work
 oauthlib==3.1.1
