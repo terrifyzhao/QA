@@ -44,7 +44,7 @@ h5py==3.2.1
 huggingface-hub==0.4.0
 idna @ file:///home/linux1/recipes/ci/idna_1610986105248/work
 ipykernel==5.5.3
-ipython==7.22.0
+ipython==7.31.1
 ipython-genutils==0.2.0
 ipywidgets==7.6.3
 isodate==0.6.0
