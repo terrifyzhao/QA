@@ -82,7 +82,7 @@ networkx==2.5.1
 notebook==6.3.0
 numba==0.53.1
 numpy @ file:///C:/ci/numpy_and_numpy_base_1603466732592/work
-oauthlib==3.1.1
+oauthlib==3.2.2
 olefile==0.46
 opencv-python==4.5.3.56
 outcome==1.1.0
